@@ -33,7 +33,7 @@ export default function Home() {
         {/* Status Bar */}
         <div className="flex items-center gap-2 mt-8 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 text-sm text-gray-500 dark:text-gray-400">
           <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-          Stack: Next.js + Neon (Postgres) + Upstash Redis + Vercel Blob
+          Stack: Next.js + Neon (Postgres) + Vercel
         </div>
 
         {/* Footer */}
