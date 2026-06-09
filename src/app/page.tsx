@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, Row, Col, Typography, Avatar, Empty, Spin } from "antd";
 import { UserOutlined, FileTextOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -17,17 +17,28 @@ export default function HomePage() {
   const [children, setChildren] = useState<Child[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const fetchChildren = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/children");
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setChildren(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "未知错误");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    fetch("/api/children")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) throw new Error(data.error);
-        setChildren(data);
-      })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, []);
+    fetchChildren();
+  }, [fetchChildren, refreshKey]);
+
+  const handleDataChange = () => setRefreshKey((k) => k + 1);
 
   return (
     <div>
@@ -38,7 +49,7 @@ export default function HomePage() {
         点击卡片浏览日记
       </Typography.Paragraph>
 
-      <AddChildDialog />
+      <AddChildDialog onSuccess={handleDataChange} />
 
       {loading ? (
         <div style={{ textAlign: "center", padding: 64 }}>

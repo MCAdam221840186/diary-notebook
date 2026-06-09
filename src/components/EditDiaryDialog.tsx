@@ -1,36 +1,56 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Modal, Form, Input, message } from "antd";
+import { useState, useEffect } from "react";
+import { Button, Modal, Form, Input, DatePicker, message } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
 export default function EditDiaryDialog({
   diary,
+  onSuccess,
 }: {
-  diary: { id: string; title: string; content: string };
+  diary: { id: string; title: string; content: string; created_at?: string };
+  onSuccess?: () => void;
 }) {
   const { isEditor, loaded } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const router = useRouter();
 
   if (!loaded || !isEditor) return null;
+
+  useEffect(() => {
+    if (open) {
+      form.setFieldsValue({
+        title: diary.title,
+        content: diary.content,
+        created_at: diary.created_at ? dayjs(diary.created_at) : dayjs(),
+      });
+    }
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSubmit = async () => {
     const values = await form.validateFields();
     setLoading(true);
     try {
       const token = localStorage.getItem("diary_auth_token");
+      const body: Record<string, unknown> = {
+        title: values.title,
+        content: values.content ?? "",
+      };
+
+      if (values.created_at) {
+        body.created_at = values.created_at.toISOString();
+      }
+
       const res = await fetch(`/api/diaries/${diary.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
@@ -40,7 +60,7 @@ export default function EditDiaryDialog({
 
       message.success("日记已更新");
       setOpen(false);
-      router.refresh();
+      onSuccess?.();
     } catch (err: unknown) {
       message.error(err instanceof Error ? err.message : "更新失败");
     } finally {
@@ -53,10 +73,7 @@ export default function EditDiaryDialog({
       <Button
         type="default"
         icon={<EditOutlined />}
-        onClick={() => {
-          form.setFieldsValue({ title: diary.title, content: diary.content });
-          setOpen(true);
-        }}
+        onClick={() => setOpen(true)}
       >
         编辑
       </Button>
@@ -66,13 +83,19 @@ export default function EditDiaryDialog({
         open={open}
         onCancel={() => {
           setOpen(false);
-          form.resetFields();
         }}
         onOk={handleSubmit}
         confirmLoading={loading}
         width={640}
       >
         <Form form={form} layout="vertical" autoComplete="off">
+          <Form.Item name="created_at" label="写作时间">
+            <DatePicker
+              showTime
+              style={{ width: "100%" }}
+              disabledDate={(d) => d && d.isAfter(dayjs())}
+            />
+          </Form.Item>
           <Form.Item
             name="title"
             label="标题"
@@ -81,7 +104,7 @@ export default function EditDiaryDialog({
             <Input placeholder="日记标题" />
           </Form.Item>
           <Form.Item name="content" label="内容">
-            <Input.TextArea rows={8} placeholder="用 Markdown 格式书写..." />
+            <Input.TextArea rows={8} placeholder="写下今天的故事..." />
           </Form.Item>
         </Form>
       </Modal>

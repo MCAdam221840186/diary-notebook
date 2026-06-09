@@ -42,16 +42,19 @@ export async function PUT(
 
   try {
     const { id } = await params;
-    const { title, content } = await request.json();
+    const { title, content, created_at } = await request.json();
 
     if (!title || typeof title !== "string" || !title.trim()) {
       return Response.json({ error: "标题不能为空" }, { status: 400 });
     }
 
     const sql = getDb();
+
+    // Build update SET dynamically — only update created_at if provided
+    const timestamp = created_at || new Date().toISOString();
     const [diary] = await sql`
       UPDATE diaries
-      SET title = ${title.trim()}, content = ${content ?? ""}, updated_at = NOW()
+      SET title = ${title.trim()}, content = ${content ?? ""}, created_at = ${timestamp}, updated_at = NOW()
       WHERE id = ${id}
       RETURNING *
     `;

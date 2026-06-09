@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { use } from "react";
 import { Typography, Card, Empty, Button, Space, Spin } from "antd";
 import {
@@ -28,25 +28,33 @@ export default function ChildPage({
   const [diaries, setDiaries] = useState<Diary[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/children/${id}/diaries`);
+      if (res.status === 404) {
+        setNotFound(true);
+        return;
+      }
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setChild(data.child);
+      setDiaries(data.diaries);
+      setNotFound(false);
+    } catch {
+      setNotFound(true);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
-    fetch(`/api/children/${id}/diaries`)
-      .then((res) => {
-        if (res.status === 404) {
-          setNotFound(true);
-          return null;
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (!data) return;
-        if (data.error) throw new Error(data.error);
-        setChild(data.child);
-        setDiaries(data.diaries);
-      })
-      .catch(() => setNotFound(true))
-      .finally(() => setLoading(false));
-  }, [id]);
+    fetchData();
+  }, [fetchData, refreshKey]);
+
+  const handleDataChange = () => setRefreshKey((k) => k + 1);
 
   if (loading) {
     return (
@@ -93,7 +101,7 @@ export default function ChildPage({
         共 {diaries.length} 篇日记
       </Typography.Paragraph>
 
-      <AddDiaryDialog childId={id} />
+      <AddDiaryDialog childId={id} onSuccess={handleDataChange} />
 
       {diaries.length === 0 ? (
         <Empty description="还没有日记" />

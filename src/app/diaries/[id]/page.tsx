@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { use } from "react";
 import { Typography, Card, Empty, Button, Space, Spin } from "antd";
 import {
@@ -29,24 +29,32 @@ export default function DiaryPage({
   const [diary, setDiary] = useState<DiaryDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/diaries/${id}`);
+      if (res.status === 404) {
+        setNotFound(true);
+        return;
+      }
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setDiary(data);
+      setNotFound(false);
+    } catch {
+      setNotFound(true);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
-    fetch(`/api/diaries/${id}`)
-      .then((res) => {
-        if (res.status === 404) {
-          setNotFound(true);
-          return null;
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (!data) return;
-        if (data.error) throw new Error(data.error);
-        setDiary(data);
-      })
-      .catch(() => setNotFound(true))
-      .finally(() => setLoading(false));
-  }, [id]);
+    fetchData();
+  }, [fetchData, refreshKey]);
+
+  const handleDataChange = () => setRefreshKey((k) => k + 1);
 
   if (loading) {
     return (
@@ -95,7 +103,9 @@ export default function DiaryPage({
               id: diary.id,
               title: diary.title,
               content: diary.content,
+              created_at: diary.created_at,
             }}
+            onSuccess={handleDataChange}
           />
         </Space>
 

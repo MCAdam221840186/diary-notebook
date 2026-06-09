@@ -44,7 +44,7 @@ export async function POST(
 
   try {
     const { childId } = await params;
-    const { title, content } = await request.json();
+    const { title, content, created_at } = await request.json();
 
     if (!title || typeof title !== "string" || !title.trim()) {
       return Response.json({ error: "标题不能为空" }, { status: 400 });
@@ -58,9 +58,10 @@ export async function POST(
       return Response.json({ error: "小朋友不存在" }, { status: 404 });
     }
 
+    const timestamp = created_at || new Date().toISOString();
     const [diary] = await sql`
-      INSERT INTO diaries (child_id, title, content)
-      VALUES (${childId}, ${title.trim()}, ${content ?? ""})
+      INSERT INTO diaries (child_id, title, content, created_at, updated_at)
+      VALUES (${childId}, ${title.trim()}, ${content ?? ""}, ${timestamp}, ${timestamp})
       RETURNING *
     `;
 

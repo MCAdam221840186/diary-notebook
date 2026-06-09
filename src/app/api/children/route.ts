@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   if (authError) return authError;
 
   try {
-    const { name, avatar_url } = await request.json();
+    const { name, avatar_data } = await request.json();
     if (!name || typeof name !== "string" || !name.trim()) {
       return Response.json({ error: "姓名不能为空" }, { status: 400 });
     }
@@ -37,7 +37,7 @@ export async function POST(request: Request) {
     const sql = getDb();
     const [child] = await sql`
       INSERT INTO children (name, avatar_url)
-      VALUES (${name.trim()}, ${avatar_url ?? null})
+      VALUES (${name.trim()}, ${avatar_data ?? null})
       RETURNING *
     `;
     return Response.json(child, { status: 201 });

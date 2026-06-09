@@ -55,6 +55,12 @@
 DATABASE_URL="postgresql://..."
 ```
 
+### 头像存储
+
+- 头像以 Base64 数据 URI 格式存储在 `children.avatar_url` 字段中
+- 前端 `compressImage()` 通过 Canvas API 在浏览器端自动压缩至 400px 以内、JPEG 质量自适应（< 1MB）
+- 无需额外文件存储服务
+
 ### 测试 Token
 
 ```text

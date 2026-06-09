@@ -1,17 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Modal, Form, Input, message } from "antd";
+import { Button, Modal, Form, Input, DatePicker, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 
-export default function AddDiaryDialog({ childId }: { childId: string }) {
+export default function AddDiaryDialog({
+  childId,
+  onSuccess,
+}: {
+  childId: string;
+  onSuccess?: () => void;
+}) {
   const { isEditor, loaded } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const router = useRouter();
 
   if (!loaded || !isEditor) return null;
 
@@ -20,13 +25,22 @@ export default function AddDiaryDialog({ childId }: { childId: string }) {
     setLoading(true);
     try {
       const token = localStorage.getItem("diary_auth_token");
+      const body: Record<string, unknown> = {
+        title: values.title,
+        content: values.content ?? "",
+      };
+
+      if (values.created_at) {
+        body.created_at = values.created_at.toISOString();
+      }
+
       const res = await fetch(`/api/children/${childId}/diaries`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
@@ -37,7 +51,7 @@ export default function AddDiaryDialog({ childId }: { childId: string }) {
       message.success("日记已添加");
       setOpen(false);
       form.resetFields();
-      router.refresh();
+      onSuccess?.();
     } catch (err: unknown) {
       message.error(err instanceof Error ? err.message : "创建失败");
     } finally {
@@ -66,8 +80,21 @@ export default function AddDiaryDialog({ childId }: { childId: string }) {
         onOk={handleSubmit}
         confirmLoading={loading}
         width={640}
+        destroyOnClose
       >
-        <Form form={form} layout="vertical" autoComplete="off">
+        <Form
+          form={form}
+          layout="vertical"
+          autoComplete="off"
+          initialValues={{ created_at: dayjs() }}
+        >
+          <Form.Item name="created_at" label="写作时间">
+            <DatePicker
+              showTime
+              style={{ width: "100%" }}
+              disabledDate={(d) => d && d.isAfter(dayjs())}
+            />
+          </Form.Item>
           <Form.Item
             name="title"
             label="标题"
@@ -76,7 +103,7 @@ export default function AddDiaryDialog({ childId }: { childId: string }) {
             <Input placeholder="日记标题" />
           </Form.Item>
           <Form.Item name="content" label="内容">
-            <Input.TextArea rows={8} placeholder="用 Markdown 格式书写..." />
+            <Input.TextArea rows={8} placeholder="写下今天的故事..." />
           </Form.Item>
         </Form>
       </Modal>
