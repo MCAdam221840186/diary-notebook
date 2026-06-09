@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button, Modal, Form, Input, DatePicker, message } from "antd";
+import { Button, Modal, Form, Input, DatePicker, notification } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { useAuth } from "@/lib/auth-context";
 import dayjs from "dayjs";
@@ -58,11 +58,11 @@ export default function EditDiaryDialog({
         throw new Error(err.error || "更新失败");
       }
 
-      message.success("日记已更新");
+      notification.success({ message: "日记已更新", placement: "topRight" });
       setOpen(false);
       onSuccess?.();
     } catch (err: unknown) {
-      message.error(err instanceof Error ? err.message : "更新失败");
+      notification.error({ message: err instanceof Error ? err.message : "更新失败", placement: "topRight" });
     } finally {
       setLoading(false);
     }

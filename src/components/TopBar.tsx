@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Layout, Typography, Modal, Input, Button, message } from "antd";
+import { Layout, Typography, Modal, Input, Button, notification } from "antd";
 import { EditOutlined, EyeOutlined, KeyOutlined } from "@ant-design/icons";
 import { useAuth } from "@/lib/auth-context";
 
@@ -14,7 +14,7 @@ export default function TopBar() {
   const handleToggle = () => {
     if (isEditor) {
       disableEdit();
-      message.info("已切换为只读模式");
+      notification.info({ message: "已切换为只读模式", placement: "topRight" });
     } else {
       setOpen(true);
     }
@@ -33,12 +33,12 @@ export default function TopBar() {
       setOpen(false);
       if (data.valid) {
         enableEdit(token.trim());
-        message.success("鉴权成功，你现在可以阅读并修改日记");
+        notification.success({ message: "鉴权成功", description: "你现在可以阅读并修改日记", placement: "topRight" });
       } else {
-        message.error("Token 无效，未能成功鉴权");
+        notification.error({ message: "Token 无效", description: "未能成功鉴权", placement: "topRight" });
       }
     } catch {
-      message.error("验证失败，请检查网络");
+      notification.error({ message: "验证失败", description: "请检查网络", placement: "topRight" });
     } finally {
       setLoading(false);
       setToken("");

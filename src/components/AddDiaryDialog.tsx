@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Modal, Form, Input, DatePicker, message } from "antd";
+import { Button, Modal, Form, Input, DatePicker, notification } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useAuth } from "@/lib/auth-context";
 import dayjs from "dayjs";
@@ -48,12 +48,12 @@ export default function AddDiaryDialog({
         throw new Error(err.error || "创建失败");
       }
 
-      message.success("日记已添加");
+      notification.success({ message: "日记已添加", placement: "topRight" });
       setOpen(false);
       form.resetFields();
       onSuccess?.();
     } catch (err: unknown) {
-      message.error(err instanceof Error ? err.message : "创建失败");
+      notification.error({ message: err instanceof Error ? err.message : "创建失败", placement: "topRight" });
     } finally {
       setLoading(false);
     }

@@ -6,9 +6,8 @@ import {
   Modal,
   Form,
   Input,
-  Upload,
   Avatar,
-  message,
+  notification,
 } from "antd";
 import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import { useAuth } from "@/lib/auth-context";
@@ -34,12 +33,12 @@ export default function AddChildDialog({
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      message.error("仅支持图片文件");
+      notification.error({ message: "仅支持图片文件", placement: "topRight" });
       return;
     }
 
     if (file.size > 1 * 1024 * 1024) {
-      message.warning("图片超过 1MB，将自动压缩");
+      notification.warning({ message: "图片超过 1MB，将自动压缩", placement: "topRight" });
     }
 
     try {
@@ -47,7 +46,7 @@ export default function AddChildDialog({
       setAvatarPreview(dataUrl);
       setAvatarFile(file);
     } catch {
-      message.error("图片处理失败");
+      notification.error({ message: "图片处理失败", placement: "topRight" });
     }
   };
 
@@ -79,14 +78,14 @@ export default function AddChildDialog({
         throw new Error(err.error || "创建失败");
       }
 
-      message.success("小朋友已添加");
+      notification.success({ message: "小朋友已添加", placement: "topRight" });
       setOpen(false);
       setAvatarPreview(null);
       setAvatarFile(null);
       form.resetFields();
       onSuccess?.();
     } catch (err: unknown) {
-      message.error(err instanceof Error ? err.message : "创建失败");
+      notification.error({ message: err instanceof Error ? err.message : "创建失败", placement: "topRight" });
     } finally {
       setLoading(false);
     }
