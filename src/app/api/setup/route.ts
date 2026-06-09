@@ -1,15 +1,35 @@
-import { neon } from "@neondatabase/serverless";
+import { getDb } from "@/lib/db";
 
 export const runtime = "edge";
 
 export async function GET() {
   try {
-    const sql = neon(process.env.DATABASE_URL!);
+    const sql = getDb();
 
-    // Create notes table
+    // Create auth_tokens table
     await sql`
-      CREATE TABLE IF NOT EXISTS notes (
+      CREATE TABLE IF NOT EXISTS auth_tokens (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        token TEXT NOT NULL UNIQUE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
+
+    // Create children table
+    await sql`
+      CREATE TABLE IF NOT EXISTS children (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name TEXT NOT NULL,
+        avatar_url TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
+
+    // Create diaries table
+    await sql`
+      CREATE TABLE IF NOT EXISTS diaries (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        child_id UUID NOT NULL REFERENCES children(id) ON DELETE CASCADE,
         title TEXT NOT NULL DEFAULT '',
         content TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -17,30 +37,39 @@ export async function GET() {
       );
     `;
 
-    // Insert a sample note
-    const [sample] = await sql`
-      INSERT INTO notes (title, content)
-      VALUES ('欢迎使用 Diary Notebook', '这是你的第一条日记。用 Markdown 格式尽情书写吧 ✍️')
-      ON CONFLICT DO NOTHING
-      RETURNING *;
-    `;
+    // Drop old notes table if exists
+    await sql`DROP TABLE IF EXISTS notes;`;
 
-    // Count total notes
-    const [{ count }] = await sql`SELECT COUNT(*)::int AS count FROM notes;`;
+    // Seed 3 test tokens (skip if already exist)
+    const testTokens = [
+      "dn-aB3kF9mX2pQ5rV7w",
+      "dn-K8sL2dR4fG6hJ9mN",
+      "dn-Q1wE3rT5yU7iO9pS",
+    ];
+    for (const token of testTokens) {
+      await sql`
+        INSERT INTO auth_tokens (token)
+        VALUES (${token})
+        ON CONFLICT (token) DO NOTHING;
+      `;
+    }
+
+    // Count rows
+    const [{ count: childCount }] =
+      await sql`SELECT COUNT(*)::int AS count FROM children;`;
+    const [{ count: diaryCount }] =
+      await sql`SELECT COUNT(*)::int AS count FROM diaries;`;
+    const [{ count: tokenCount }] =
+      await sql`SELECT COUNT(*)::int AS count FROM auth_tokens;`;
 
     return Response.json({
       status: "ok",
-      message: "数据库连接成功，notes 表已就绪",
-      total_notes: count,
-      sample_note: sample ?? null,
+      tables: { children: childCount, diaries: diaryCount, auth_tokens: tokenCount },
     });
   } catch (error) {
-    console.error("Database setup failed:", error);
+    console.error("Setup failed:", error);
     return Response.json(
-      {
-        status: "error",
-        message: error instanceof Error ? error.message : "未知错误",
-      },
+      { status: "error", message: error instanceof Error ? error.message : "未知错误" },
       { status: 500 }
     );
   }

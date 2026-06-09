@@ -1,66 +1,89 @@
-export default function Home() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
-      <main className="flex flex-col items-center gap-8 max-w-2xl w-full">
-        {/* Logo / Title */}
-        <div className="flex flex-col items-center gap-2">
-          <div className="text-6xl">📓</div>
-          <h1 className="text-4xl font-bold tracking-tight">Diary Notebook</h1>
-          <p className="text-lg text-gray-500 dark:text-gray-400 text-center">
-            记录每一天的思考与灵感
-          </p>
-        </div>
+"use client";
 
-        {/* Feature Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full mt-8">
-          <Card
-            emoji="✍️"
-            title="写日记"
-            description="Markdown 格式，支持富文本编辑"
-          />
-          <Card
-            emoji="🔍"
-            title="全文搜索"
-            description="快速检索过去的记录"
-          />
-          <Card
-            emoji="☁️"
-            title="云同步"
-            description="数据存储在云端，随时随地访问"
-          />
-        </div>
+import { useState, useEffect } from "react";
+import { Card, Row, Col, Typography, Avatar, Empty, Spin } from "antd";
+import { UserOutlined, FileTextOutlined } from "@ant-design/icons";
+import Link from "next/link";
+import AddChildDialog from "@/components/AddChildDialog";
 
-        {/* Status Bar */}
-        <div className="flex items-center gap-2 mt-8 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 text-sm text-gray-500 dark:text-gray-400">
-          <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-          Stack: Next.js + Neon (Postgres) + Vercel
-        </div>
-
-        {/* Footer */}
-        <p className="text-xs text-gray-400 mt-8">
-          部署于 Vercel &middot; 开发中
-        </p>
-      </main>
-    </div>
-  );
+interface Child {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+  diary_count: number;
 }
 
-function Card({
-  emoji,
-  title,
-  description,
-}: {
-  emoji: string;
-  title: string;
-  description: string;
-}) {
+export default function HomePage() {
+  const [children, setChildren] = useState<Child[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/children")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) throw new Error(data.error);
+        setChildren(data);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
-    <div className="flex flex-col items-center gap-2 p-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition-shadow">
-      <span className="text-3xl">{emoji}</span>
-      <h3 className="font-semibold text-base">{title}</h3>
-      <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-        {description}
-      </p>
+    <div>
+      <Typography.Title level={2} style={{ marginBottom: 8 }}>
+        小朋友们的日记
+      </Typography.Title>
+      <Typography.Paragraph type="secondary" style={{ marginBottom: 24 }}>
+        点击卡片浏览日记
+      </Typography.Paragraph>
+
+      <AddChildDialog />
+
+      {loading ? (
+        <div style={{ textAlign: "center", padding: 64 }}>
+          <Spin size="large" />
+        </div>
+      ) : error ? (
+        <Empty
+          description={
+            <Typography.Text type="danger">加载失败: {error}</Typography.Text>
+          }
+        />
+      ) : children.length === 0 ? (
+        <Empty description="还没有小朋友，在提权后添加第一位小作者吧" />
+      ) : (
+        <Row gutter={[16, 16]}>
+          {children.map((child) => (
+            <Col key={child.id} xs={12} sm={8} md={6} lg={4}>
+              <Link href={`/children/${child.id}`} style={{ textDecoration: "none" }}>
+                <Card
+                  hoverable
+                  style={{ textAlign: "center" }}
+                  styles={{ body: { padding: 24 } }}
+                >
+                  <Avatar
+                    size={64}
+                    src={child.avatar_url}
+                    icon={!child.avatar_url ? <UserOutlined /> : undefined}
+                    style={{ marginBottom: 12 }}
+                  />
+                  <Typography.Text
+                    strong
+                    style={{ display: "block", fontSize: 15 }}
+                  >
+                    {child.name}
+                  </Typography.Text>
+                  <Typography.Text type="secondary" style={{ fontSize: 13 }}>
+                    <FileTextOutlined style={{ marginRight: 4 }} />
+                    {child.diary_count} 篇日记
+                  </Typography.Text>
+                </Card>
+              </Link>
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 }
