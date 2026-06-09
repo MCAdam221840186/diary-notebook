@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import Link from "next/link";
 import AddDiaryDialog from "@/components/AddDiaryDialog";
+import AvatarUpload from "@/components/AvatarUpload";
 
 interface Diary {
   id: string;
@@ -18,13 +19,19 @@ interface Diary {
   created_at: string;
 }
 
+interface ChildData {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+}
+
 export default function ChildPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const [child, setChild] = useState<{ id: string; name: string } | null>(null);
+  const [child, setChild] = useState<ChildData | null>(null);
   const [diaries, setDiaries] = useState<Diary[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -94,14 +101,27 @@ export default function ChildPage({
         </Link>
       </Space>
 
-      <Typography.Title level={2} style={{ marginBottom: 8 }}>
+      <div style={{ textAlign: "center", marginBottom: 16 }}>
+        <AvatarUpload
+          childId={id}
+          currentAvatar={child.avatar_url}
+          onSuccess={handleDataChange}
+        />
+      </div>
+
+      <Typography.Title level={2} style={{ textAlign: "center", marginBottom: 8 }}>
         {child.name} 的日记
       </Typography.Title>
-      <Typography.Paragraph type="secondary" style={{ marginBottom: 24 }}>
+      <Typography.Paragraph
+        type="secondary"
+        style={{ textAlign: "center", marginBottom: 24 }}
+      >
         共 {diaries.length} 篇日记
       </Typography.Paragraph>
 
-      <AddDiaryDialog childId={id} onSuccess={handleDataChange} />
+      <div style={{ textAlign: "center", marginBottom: 24 }}>
+        <AddDiaryDialog childId={id} onSuccess={handleDataChange} />
+      </div>
 
       {diaries.length === 0 ? (
         <Empty description="还没有日记" />

@@ -13,7 +13,7 @@ export async function GET(
     const sql = getDb();
 
     // Verify child exists
-    const [child] = await sql`SELECT id, name FROM children WHERE id = ${childId}`;
+    const [child] = await sql`SELECT id, name, avatar_url FROM children WHERE id = ${childId}`;
     if (!child) {
       return Response.json({ error: "小朋友不存在" }, { status: 404 });
     }
