@@ -1,6 +1,6 @@
 "use client";
 
-import { Typography, Row, Col, Card, Avatar, Space } from "antd";
+import { Typography, Row, Col, Card, Avatar, Space, Divider } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 const teamMembers = [
@@ -36,9 +36,11 @@ export default function AboutPage() {
       <Typography.Title level={2} style={{ marginBottom: 8 }}>
         关于我们
       </Typography.Title>
-      <Typography.Paragraph type="secondary" style={{ marginBottom: 32 }}>
+      <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
         这个日记本应用帮助老师记录和保存孩子们的成长故事。
       </Typography.Paragraph>
+
+      <Divider style={{ marginTop: 16, marginBottom: 24 }} />
 
       <Typography.Title level={4} style={{ marginBottom: 16 }}>
         团队成员

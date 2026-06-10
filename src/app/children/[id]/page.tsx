@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { use } from "react";
-import { Typography, Card, Empty, Button, Space, Spin } from "antd";
+import { Typography, Card, Empty, Button, Space, Spin, Divider } from "antd";
 import {
   ArrowLeftOutlined,
   CalendarOutlined,
@@ -114,10 +114,12 @@ export default function ChildPage({
       </Typography.Title>
       <Typography.Paragraph
         type="secondary"
-        style={{ textAlign: "center", marginBottom: 24 }}
+        style={{ textAlign: "center", marginBottom: 0 }}
       >
         共 {diaries.length} 篇日记
       </Typography.Paragraph>
+
+      <Divider style={{ marginTop: 16, marginBottom: 24 }} />
 
       <div style={{ textAlign: "center", marginBottom: 24 }}>
         <AddDiaryDialog childId={id} onSuccess={handleDataChange} />
@@ -134,7 +136,7 @@ export default function ChildPage({
           >
             <Card
               hoverable
-              style={{ marginBottom: 12 }}
+              style={{ marginBottom: 12, borderLeft: "3px solid #4caf50" }}
               styles={{ body: { padding: "16px 24px" } }}
             >
               <Space direction="vertical" size={4} style={{ width: "100%" }}>

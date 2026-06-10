@@ -43,15 +43,19 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <AuthProvider>
         <Layout style={{ minHeight: "100vh" }}>
           <Sidebar />
-          <Layout style={{ marginLeft: 220 }}>
+          <Layout style={{ marginLeft: 220, background: "#f0f2f5" }}>
             <Content
               key={pathname}
               className="page-transition"
               style={{
                 maxWidth: 1200,
-                margin: "0 auto",
-                padding: "24px 24px 48px",
+                margin: "24px auto 0",
+                padding: "32px 40px 48px",
                 width: "100%",
+                background: "#fff",
+                borderRadius: 8,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                minHeight: "calc(100vh - 48px)",
               }}
             >
               {children}

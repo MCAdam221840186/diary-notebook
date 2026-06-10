@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Card, Row, Col, Typography, Avatar, Empty, Spin } from "antd";
+import { Card, Row, Col, Typography, Avatar, Empty, Spin, Divider } from "antd";
 import { UserOutlined, FileTextOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import AddChildDialog from "@/components/AddChildDialog";
@@ -45,9 +45,11 @@ export default function DiariesPage() {
       <Typography.Title level={2} style={{ marginBottom: 8 }}>
         小朋友们的日记
       </Typography.Title>
-      <Typography.Paragraph type="secondary" style={{ marginBottom: 24 }}>
+      <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
         点击卡片浏览日记
       </Typography.Paragraph>
+
+      <Divider style={{ marginTop: 16, marginBottom: 24 }} />
 
       <AddChildDialog onSuccess={handleDataChange} />
 

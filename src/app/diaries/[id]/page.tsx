@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { use } from "react";
-import { Typography, Card, Empty, Button, Space, Spin } from "antd";
+import { Typography, Card, Empty, Button, Space, Spin, Divider } from "antd";
 import {
   ArrowLeftOutlined,
   CalendarOutlined,
@@ -96,7 +96,10 @@ export default function DiaryPage({
         </Link>
       </Space>
 
-      <Card styles={{ body: { padding: "32px 40px" } }}>
+      <Card
+        style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+        styles={{ body: { padding: "32px 40px" } }}
+      >
         <Space style={{ marginBottom: 16 }}>
           <EditDiaryDialog
             diary={{
@@ -113,7 +116,7 @@ export default function DiaryPage({
           {diary.title}
         </Typography.Title>
 
-        <Space style={{ marginBottom: 24 }}>
+        <Space style={{ marginBottom: 16 }}>
           <Typography.Text type="secondary">
             <UserOutlined style={{ marginRight: 4 }} />
             {diary.child_name}
@@ -123,6 +126,8 @@ export default function DiaryPage({
             {formatDate(diary.created_at)}
           </Typography.Text>
         </Space>
+
+        <Divider style={{ marginTop: 0, marginBottom: 24 }} />
 
         <div
           style={{

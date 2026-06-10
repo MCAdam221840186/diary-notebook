@@ -102,8 +102,7 @@ export default function Sidebar() {
       <Layout.Sider
         width={220}
         style={{
-          background: "#fff",
-          borderRight: "1px solid #f0f0f0",
+          background: "#2e7d32",
           height: "100vh",
           position: "fixed",
           left: 0,
@@ -117,27 +116,32 @@ export default function Sidebar() {
         <div
           style={{
             padding: "20px 16px 12px",
-            borderBottom: "1px solid #f0f0f0",
+            borderBottom: "1px solid rgba(255,255,255,0.15)",
           }}
         >
-          <Typography.Text strong style={{ fontSize: 16 }}>
+          <Typography.Text strong style={{ fontSize: 16, color: "#fff" }}>
             📓 Diary Notebook
           </Typography.Text>
         </div>
 
         {/* Navigation menu */}
         <Menu
+          theme="dark"
           mode="inline"
           selectedKeys={[selectedKey]}
           items={menuItems}
-          style={{ borderInlineEnd: "none", flex: 1 }}
+          style={{
+            borderInlineEnd: "none",
+            flex: 1,
+            background: "transparent",
+          }}
         />
 
         {/* Auth status at bottom — looks like a passive label */}
         <div
           style={{
             padding: "12px 16px",
-            borderTop: "1px solid #f0f0f0",
+            borderTop: "1px solid rgba(255,255,255,0.15)",
             cursor: "pointer",
             userSelect: "none",
           }}
@@ -146,10 +150,10 @@ export default function Sidebar() {
         >
           <span
             style={{
-              color: isEditor ? "#52c41a" : "#8c8c8c",
+              color: isEditor ? "#a5d6a7" : "rgba(255,255,255,0.65)",
               fontSize: 13,
               borderBottom: isEditor
-                ? "1px dashed #52c41a"
+                ? "1px dashed #a5d6a7"
                 : "1px dashed transparent",
             }}
           >
