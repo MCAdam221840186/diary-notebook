@@ -11,6 +11,24 @@ const { Content } = Layout;
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
+  // Landing page — full screen, no sidebar
+  if (pathname === "/") {
+    return (
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#4caf50",
+            borderRadius: 8,
+            fontFamily:
+              'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif',
+          },
+        }}
+      >
+        <AuthProvider>{children}</AuthProvider>
+      </ConfigProvider>
+    );
+  }
+
   return (
     <ConfigProvider
       theme={{

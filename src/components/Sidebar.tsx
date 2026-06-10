@@ -18,7 +18,6 @@ import {
   EditOutlined,
   EyeOutlined,
   KeyOutlined,
-  HomeOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "@/lib/auth-context";
 
@@ -76,20 +75,14 @@ export default function Sidebar() {
   };
 
   // Determine selected menu key from pathname
-  const selectedKey = pathname === "/"
-    ? "/"
-    : pathname.startsWith("/diaries") || pathname.startsWith("/children")
-      ? "/diaries"
-      : pathname === "/about"
-        ? "/about"
-        : "/";
+  // Sidebar is hidden on "/" (landing page), so this only runs on sub-pages
+  const selectedKey = pathname.startsWith("/diaries") || pathname.startsWith("/children")
+    ? "/diaries"
+    : pathname === "/about"
+      ? "/about"
+      : "/diaries";
 
   const menuItems = [
-    {
-      key: "/",
-      icon: <HomeOutlined />,
-      label: <Link href="/">主页</Link>,
-    },
     {
       key: "/diaries",
       icon: <BookOutlined />,
