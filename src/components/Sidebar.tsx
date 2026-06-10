@@ -128,7 +128,7 @@ export default function Sidebar() {
           style={{ borderInlineEnd: "none", flex: 1 }}
         />
 
-        {/* Auth status at bottom */}
+        {/* Auth status at bottom — looks like a passive label */}
         <div
           style={{
             padding: "12px 16px",
@@ -137,28 +137,29 @@ export default function Sidebar() {
             userSelect: "none",
           }}
           onClick={handleToggle}
-          title={
-            isEditor ? "点击切换为只读模式" : "点击输入鉴权 Token"
-          }
+          title={isEditor ? "点击切换为只读模式" : "点击输入鉴权 Token"}
         >
-          <Typography.Text
+          <span
             style={{
-              fontSize: 13,
               color: isEditor ? "#52c41a" : "#8c8c8c",
+              fontSize: 13,
+              borderBottom: isEditor
+                ? "1px dashed #52c41a"
+                : "1px dashed transparent",
             }}
           >
             {isEditor ? (
               <>
                 <EditOutlined style={{ marginRight: 4 }} />
-                编辑模式
+                你正在阅读并修改日记
               </>
             ) : (
               <>
                 <EyeOutlined style={{ marginRight: 4 }} />
-                只读模式
+                你正在阅读日记
               </>
             )}
-          </Typography.Text>
+          </span>
         </div>
       </Layout.Sider>
 
