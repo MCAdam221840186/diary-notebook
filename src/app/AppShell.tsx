@@ -4,10 +4,13 @@ import type { ReactNode } from "react";
 import { ConfigProvider, Layout } from "antd";
 import { AuthProvider } from "@/lib/auth-context";
 import Sidebar from "@/components/Sidebar";
+import { usePathname } from "next/navigation";
 
 const { Content } = Layout;
 
 export default function AppShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+
   return (
     <ConfigProvider
       theme={{
@@ -24,6 +27,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <Sidebar />
           <Layout style={{ marginLeft: 220 }}>
             <Content
+              key={pathname}
+              className="page-transition"
               style={{
                 maxWidth: 1200,
                 margin: "0 auto",

@@ -18,6 +18,7 @@ import {
   EditOutlined,
   EyeOutlined,
   KeyOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "@/lib/auth-context";
 
@@ -75,9 +76,16 @@ export default function Sidebar() {
   };
 
   // Determine selected menu key from pathname
-  const selectedKey = pathname === "/about" ? "/about" : "/";
+  const selectedKey = ["/home", "/", "/about"].includes(pathname)
+    ? pathname
+    : "/";
 
   const menuItems = [
+    {
+      key: "/home",
+      icon: <HomeOutlined />,
+      label: <Link href="/home">主页</Link>,
+    },
     {
       key: "/",
       icon: <BookOutlined />,
