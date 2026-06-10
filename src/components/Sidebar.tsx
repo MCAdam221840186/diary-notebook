@@ -76,9 +76,13 @@ export default function Sidebar() {
   };
 
   // Determine selected menu key from pathname
-  const selectedKey = ["/", "/diaries", "/about"].includes(pathname)
-    ? (pathname === "/" ? "/" : pathname)
-    : "/";
+  const selectedKey = pathname === "/"
+    ? "/"
+    : pathname.startsWith("/diaries") || pathname.startsWith("/children")
+      ? "/diaries"
+      : pathname === "/about"
+        ? "/about"
+        : "/";
 
   const menuItems = [
     {
