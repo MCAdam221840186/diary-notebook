@@ -135,7 +135,7 @@ export default function AddChildDialog({
               {avatarPreview ? (
                 <>
                   <span
-                    style={{ cursor: "pointer", color: "#1677ff" }}
+                    style={{ cursor: "pointer", color: "#4caf50" }}
                     onClick={() => uploadRef.current?.click()}
                   >
                     更换
@@ -150,7 +150,7 @@ export default function AddChildDialog({
                 </>
               ) : (
                 <span
-                  style={{ cursor: "pointer", color: "#1677ff" }}
+                  style={{ cursor: "pointer", color: "#4caf50" }}
                   onClick={() => uploadRef.current?.click()}
                 >
                   点击上传头像（小于 1MB）

@@ -59,7 +59,7 @@ export default function AboutPage() {
                 <Avatar
                   size={72}
                   icon={<UserOutlined />}
-                  style={{ backgroundColor: "#1677ff" }}
+                  style={{ backgroundColor: "#4caf50" }}
                 />
                 <div>
                   <Typography.Text

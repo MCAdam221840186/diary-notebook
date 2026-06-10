@@ -112,7 +112,7 @@ export default function AvatarUpload({
               position: "absolute",
               bottom: 0,
               right: 0,
-              background: "#1677ff",
+              background: "#4caf50",
               borderRadius: "50%",
               width: 28,
               height: 28,
@@ -148,7 +148,7 @@ export default function AvatarUpload({
             style={{ display: "block", margin: "0 auto 16px" }}
           />
           <span
-            style={{ color: "#1677ff", cursor: "pointer", fontSize: 14 }}
+            style={{ color: "#4caf50", cursor: "pointer", fontSize: 14 }}
             onClick={() => uploadRef.current?.click()}
           >
             选择图片
