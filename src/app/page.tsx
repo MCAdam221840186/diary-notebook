@@ -84,9 +84,6 @@ export default function LandingPage() {
             height: 48,
             paddingInline: 36,
             fontSize: 16,
-            background: "#4caf50",
-            borderColor: "#4caf50",
-            boxShadow: "0 4px 12px rgba(76,175,80,0.3)",
           }}
         >
           进入日记
