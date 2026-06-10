@@ -74,7 +74,7 @@ export default function ChildPage({
   if (notFound || !child) {
     return (
       <Empty description="小朋友不存在">
-        <Link href="/home">
+        <Link href="/diaries">
           <Button type="primary" icon={<ArrowLeftOutlined />}>
             返回首页
           </Button>
@@ -94,7 +94,7 @@ export default function ChildPage({
   return (
     <div>
       <Space style={{ marginBottom: 24 }}>
-        <Link href="/home">
+        <Link href="/diaries">
           <Button type="text" icon={<ArrowLeftOutlined />}>
             返回
           </Button>

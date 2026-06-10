@@ -76,15 +76,15 @@ export default function Sidebar() {
   };
 
   // Determine selected menu key from pathname
-  const selectedKey = ["/home", "/diaries", "/about"].includes(pathname)
-    ? pathname
-    : "/home";
+  const selectedKey = ["/", "/diaries", "/about"].includes(pathname)
+    ? (pathname === "/" ? "/" : pathname)
+    : "/";
 
   const menuItems = [
     {
-      key: "/home",
+      key: "/",
       icon: <HomeOutlined />,
-      label: <Link href="/home">主页</Link>,
+      label: <Link href="/">主页</Link>,
     },
     {
       key: "/diaries",

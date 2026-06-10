@@ -67,7 +67,7 @@ export default function DiaryPage({
   if (notFound || !diary) {
     return (
       <Empty description="日记不存在">
-        <Link href="/home">
+        <Link href="/diaries">
           <Button type="primary" icon={<ArrowLeftOutlined />}>
             返回首页
           </Button>
