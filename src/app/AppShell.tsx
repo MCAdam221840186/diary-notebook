@@ -49,7 +49,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
               className="page-transition"
               style={{
                 maxWidth: 1200,
-                margin: "24px auto 0",
+                margin: "24px auto",
                 padding: "32px 40px 48px",
                 width: "100%",
                 background: "#fff",
