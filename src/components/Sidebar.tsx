@@ -112,16 +112,19 @@ export default function Sidebar() {
           flexDirection: "column",
         }}
       >
-        {/* App title */}
+        {/* App title — click to go home */}
         <div
           style={{
             padding: "20px 16px 12px",
             borderBottom: "1px solid rgba(255,255,255,0.15)",
+            cursor: "pointer",
           }}
         >
-          <Typography.Text strong style={{ fontSize: 16, color: "#fff" }}>
-            📓 Diary Notebook
-          </Typography.Text>
+          <Link href="/" style={{ textDecoration: "none" }}>
+            <Typography.Text strong style={{ fontSize: 16, color: "#fff" }}>
+              📓 Diary Notebook
+            </Typography.Text>
+          </Link>
         </div>
 
         {/* Navigation menu */}
