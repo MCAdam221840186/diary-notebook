@@ -102,7 +102,7 @@ export default function Sidebar() {
       <Layout.Sider
         width={220}
         style={{
-          background: "#2e7d32",
+          background: "linear-gradient(180deg, #2e7d32 0%, #1b5e20 100%)",
           height: "100vh",
           position: "fixed",
           left: 0,
