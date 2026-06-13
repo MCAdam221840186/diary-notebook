@@ -115,13 +115,13 @@ export default function Sidebar() {
         {/* App title — click to go home */}
         <div
           style={{
-            padding: "20px 16px 12px",
+            padding: "24px 16px 16px",
             borderBottom: "1px solid rgba(0,0,0,0.08)",
             cursor: "pointer",
           }}
         >
           <Link href="/" style={{ textDecoration: "none" }}>
-            <Typography.Text strong style={{ fontSize: 16, color: "#2e7d32" }}>
+            <Typography.Text strong style={{ fontSize: 22, color: "#2e7d32" }}>
               🌱 云启青禾
             </Typography.Text>
           </Link>
