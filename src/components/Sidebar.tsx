@@ -86,7 +86,7 @@ export default function Sidebar() {
     {
       key: "/diaries",
       icon: <BookOutlined />,
-      label: <Link href="/diaries">日记</Link>,
+      label: <Link href="/diaries">成长日志</Link>,
     },
     {
       key: "/about",

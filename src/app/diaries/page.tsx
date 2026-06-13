@@ -43,7 +43,7 @@ export default function DiariesPage() {
   return (
     <div>
       <Typography.Title level={2} style={{ marginBottom: 8 }}>
-        小朋友们的日记
+        记录小朋友们的每一天
       </Typography.Title>
       <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
         点击卡片浏览日记
