@@ -91,7 +91,7 @@ export default function Sidebar() {
     {
       key: "/about",
       icon: <InfoCircleOutlined />,
-      label: <Link href="/about">关于</Link>,
+      label: <Link href="/about">团队成员</Link>,
     },
   ];
 
