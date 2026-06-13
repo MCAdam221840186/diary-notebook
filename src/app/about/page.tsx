@@ -1,36 +1,57 @@
 "use client";
 
-import { Typography, Row, Col, Card, Avatar, Space, Divider } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { useState, useEffect, useCallback } from "react";
+import {
+  Typography,
+  Row,
+  Col,
+  Card,
+  Avatar,
+  Space,
+  Divider,
+  Spin,
+  Empty,
+} from "antd";
+import { UserOutlined, EditOutlined } from "@ant-design/icons";
+import { useAuth } from "@/lib/auth-context";
+import EditTeamMemberDialog from "@/components/EditTeamMemberDialog";
 
-const teamMembers = [
-  {
-    name: "张老师",
-    role: "班主任 & 语文老师",
-    description: "负责班级日常管理，记录孩子们的成长点滴。",
-    avatar: null,
-  },
-  {
-    name: "李老师",
-    role: "数学老师",
-    description: "用数字和逻辑启发孩子们的思维。",
-    avatar: null,
-  },
-  {
-    name: "王老师",
-    role: "英语老师",
-    description: "带领孩子们走进英语的世界。",
-    avatar: null,
-  },
-  {
-    name: "陈老师",
-    role: "美术老师",
-    description: "鼓励孩子们用画笔表达内心的想法。",
-    avatar: null,
-  },
-];
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  description: string;
+  avatar_url: string | null;
+}
 
 export default function AboutPage() {
+  const { isEditor, loaded } = useAuth();
+  const [members, setMembers] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const fetchMembers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/team-members");
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setMembers(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "未知错误");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMembers();
+  }, [fetchMembers, refreshKey]);
+
+  const handleDataChange = () => setRefreshKey((k) => k + 1);
+
   return (
     <div>
       <Typography.Title level={2} style={{ marginBottom: 8 }}>
@@ -46,48 +67,96 @@ export default function AboutPage() {
         团队成员
       </Typography.Title>
 
-      <Row gutter={[16, 16]}>
-        {teamMembers.map((member, index) => (
-          <Col key={index} xs={24} sm={12} md={8} lg={6}>
-            <Card
-              hoverable
-              styles={{ body: { padding: 24 } }}
-            >
-              <Space
-                direction="vertical"
-                style={{ width: "100%", textAlign: "center" }}
-                size={12}
-              >
-                <Avatar
-                  size={72}
-                  icon={<UserOutlined />}
-                  style={{ backgroundColor: "#4caf50" }}
-                />
-                <div>
-                  <Typography.Text
-                    strong
-                    style={{ display: "block", fontSize: 16 }}
+      {/* Add button — only for editors */}
+      {loaded && isEditor && (
+        <EditTeamMemberDialog onSuccess={handleDataChange} />
+      )}
+
+      {loading ? (
+        <div style={{ textAlign: "center", padding: 64 }}>
+          <Spin size="large" />
+        </div>
+      ) : error ? (
+        <Empty
+          description={
+            <Typography.Text type="danger">加载失败: {error}</Typography.Text>
+          }
+        />
+      ) : members.length === 0 ? (
+        <Empty description="还没有团队成员，在提权后添加第一位成员吧" />
+      ) : (
+        <Row gutter={[16, 16]}>
+          {members.map((member) => (
+            <Col key={member.id} xs={24} sm={12} md={8} lg={6}>
+              <EditTeamMemberDialog
+                member={member}
+                onSuccess={handleDataChange}
+                trigger={
+                  <Card
+                    hoverable
+                    styles={{ body: { padding: 24 } }}
+                    style={{
+                      cursor: loaded && isEditor ? "pointer" : "default",
+                      position: "relative",
+                    }}
                   >
-                    {member.name}
-                  </Typography.Text>
-                  <Typography.Text
-                    type="secondary"
-                    style={{ display: "block", fontSize: 13, marginTop: 4 }}
-                  >
-                    {member.role}
-                  </Typography.Text>
-                </div>
-                <Typography.Paragraph
-                  type="secondary"
-                  style={{ margin: 0, fontSize: 13 }}
-                >
-                  {member.description}
-                </Typography.Paragraph>
-              </Space>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+                    {loaded && isEditor && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          color: "#4caf50",
+                          fontSize: 16,
+                          opacity: 0.6,
+                        }}
+                      >
+                        <EditOutlined />
+                      </div>
+                    )}
+                    <Space
+                      direction="vertical"
+                      style={{ width: "100%", textAlign: "center" }}
+                      size={12}
+                    >
+                      <Avatar
+                        size={72}
+                        src={member.avatar_url}
+                        icon={!member.avatar_url ? <UserOutlined /> : undefined}
+                        style={{ backgroundColor: "#4caf50" }}
+                      />
+                      <div>
+                        <Typography.Text
+                          strong
+                          style={{ display: "block", fontSize: 16 }}
+                        >
+                          {member.name}
+                        </Typography.Text>
+                        {member.role && (
+                          <Typography.Text
+                            type="secondary"
+                            style={{ display: "block", fontSize: 13, marginTop: 4 }}
+                          >
+                            {member.role}
+                          </Typography.Text>
+                        )}
+                      </div>
+                      {member.description && (
+                        <Typography.Paragraph
+                          type="secondary"
+                          style={{ margin: 0, fontSize: 13 }}
+                        >
+                          {member.description}
+                        </Typography.Paragraph>
+                      )}
+                    </Space>
+                  </Card>
+                }
+              />
+            </Col>
+          ))}
+        </Row>
+      )}
     </div>
   );
 }

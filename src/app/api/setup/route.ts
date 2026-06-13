@@ -37,6 +37,19 @@ export async function GET() {
       );
     `;
 
+    // Create team_members table
+    await sql`
+      CREATE TABLE IF NOT EXISTS team_members (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT '',
+        description TEXT NOT NULL DEFAULT '',
+        avatar_url TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
+
     // Drop old notes table if exists
     await sql`DROP TABLE IF EXISTS notes;`;
 
@@ -61,10 +74,17 @@ export async function GET() {
       await sql`SELECT COUNT(*)::int AS count FROM diaries;`;
     const [{ count: tokenCount }] =
       await sql`SELECT COUNT(*)::int AS count FROM auth_tokens;`;
+    const [{ count: memberCount }] =
+      await sql`SELECT COUNT(*)::int AS count FROM team_members;`;
 
     return Response.json({
       status: "ok",
-      tables: { children: childCount, diaries: diaryCount, auth_tokens: tokenCount },
+      tables: {
+        children: childCount,
+        diaries: diaryCount,
+        auth_tokens: tokenCount,
+        team_members: memberCount,
+      },
     });
   } catch (error) {
     console.error("Setup failed:", error);
