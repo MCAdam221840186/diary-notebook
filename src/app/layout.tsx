@@ -3,7 +3,7 @@ import AppShell from "./AppShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Diary Notebook",
+  title: "云启青禾",
   description: "全栈日记笔记本 — 记录每一天的思考与灵感",
 };
 

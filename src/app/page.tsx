@@ -100,7 +100,7 @@ export default function LandingPage() {
           letterSpacing: 2,
         }}
       >
-        Diary Notebook
+        云启青禾
       </div>
     </div>
   );

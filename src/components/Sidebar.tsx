@@ -122,7 +122,7 @@ export default function Sidebar() {
         >
           <Link href="/" style={{ textDecoration: "none" }}>
             <Typography.Text strong style={{ fontSize: 16, color: "#2e7d32" }}>
-              📓 Diary Notebook
+              🌱 云启青禾
             </Typography.Text>
           </Link>
         </div>
