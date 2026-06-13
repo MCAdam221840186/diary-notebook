@@ -102,7 +102,7 @@ export default function Sidebar() {
       <Layout.Sider
         width={220}
         style={{
-          background: "linear-gradient(180deg, #2e7d32 0%, #1b5e20 100%)",
+          background: "linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e3f2fd 100%)",
           height: "100vh",
           position: "fixed",
           left: 0,
@@ -116,12 +116,12 @@ export default function Sidebar() {
         <div
           style={{
             padding: "20px 16px 12px",
-            borderBottom: "1px solid rgba(255,255,255,0.15)",
+            borderBottom: "1px solid rgba(0,0,0,0.08)",
             cursor: "pointer",
           }}
         >
           <Link href="/" style={{ textDecoration: "none" }}>
-            <Typography.Text strong style={{ fontSize: 16, color: "#fff" }}>
+            <Typography.Text strong style={{ fontSize: 16, color: "#2e7d32" }}>
               📓 Diary Notebook
             </Typography.Text>
           </Link>
@@ -129,7 +129,7 @@ export default function Sidebar() {
 
         {/* Navigation menu */}
         <Menu
-          theme="dark"
+          theme="light"
           mode="inline"
           selectedKeys={[selectedKey]}
           items={menuItems}
@@ -144,7 +144,7 @@ export default function Sidebar() {
         <div
           style={{
             padding: "12px 16px",
-            borderTop: "1px solid rgba(255,255,255,0.15)",
+            borderTop: "1px solid rgba(0,0,0,0.08)",
             cursor: "pointer",
             userSelect: "none",
           }}
@@ -153,10 +153,10 @@ export default function Sidebar() {
         >
           <span
             style={{
-              color: isEditor ? "#a5d6a7" : "rgba(255,255,255,0.65)",
+              color: isEditor ? "#2e7d32" : "rgba(0,0,0,0.45)",
               fontSize: 13,
               borderBottom: isEditor
-                ? "1px dashed #a5d6a7"
+                ? "1px dashed #2e7d32"
                 : "1px dashed transparent",
             }}
           >
