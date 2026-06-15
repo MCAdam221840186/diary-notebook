@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { ConfigProvider, Layout } from "antd";
+import zhCN from "antd/locale/zh_CN";
 import { AuthProvider } from "@/lib/auth-context";
 import Sidebar from "@/components/Sidebar";
 import { usePathname } from "next/navigation";
@@ -15,6 +16,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   if (pathname === "/") {
     return (
       <ConfigProvider
+        locale={zhCN}
         theme={{
           token: {
             colorPrimary: "#4caf50",
@@ -31,6 +33,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <ConfigProvider
+      locale={zhCN}
       theme={{
         token: {
           colorPrimary: "#4caf50",

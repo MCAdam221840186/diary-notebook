@@ -15,6 +15,7 @@ import {
 import {
   BookOutlined,
   InfoCircleOutlined,
+  TeamOutlined,
   EditOutlined,
   EyeOutlined,
   KeyOutlined,
@@ -78,15 +79,22 @@ export default function Sidebar() {
   // Sidebar is hidden on "/" (landing page), so this only runs on sub-pages
   const selectedKey = pathname.startsWith("/diaries") || pathname.startsWith("/children")
     ? "/diaries"
-    : pathname === "/about"
-      ? "/about"
-      : "/diaries";
+    : pathname.startsWith("/team-diaries")
+      ? "/team-diaries"
+      : pathname === "/about"
+        ? "/about"
+        : "/diaries";
 
   const menuItems = [
     {
       key: "/diaries",
       icon: <BookOutlined />,
       label: <Link href="/diaries">成长日志</Link>,
+    },
+    {
+      key: "/team-diaries",
+      icon: <TeamOutlined />,
+      label: <Link href="/team-diaries">团队日志</Link>,
     },
     {
       key: "/about",
